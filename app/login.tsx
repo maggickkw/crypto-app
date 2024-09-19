@@ -6,12 +6,14 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { defaultStyles } from "@/constants/Styles";
 import Colors from "@/constants/Colors";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { isClerkAPIResponseError, useSignIn } from "@clerk/clerk-expo";
 
 enum loginType {
   Phone,
@@ -21,11 +23,40 @@ enum loginType {
 }
 
 const login = () => {
-  const [countryCode, setCountryCode] = useState("+233");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const router = useRouter();
+  const {signIn} = useSignIn();
 
   const onLogin = async (type: loginType) => {
-    if (type === loginType.Phone) {
+
+    if (type === loginType.Email) {
+      try {
+
+        const { supportedFirstFactors} = await signIn!.create({
+          identifier: email
+        });
+
+        const firstEmailFactor: any = supportedFirstFactors?.find((factor: any) => {
+          return factor.strategy === 'email_code';
+        })
+
+        const { emailAddressId } = firstEmailFactor;
+
+        await signIn!.prepareFirstFactor({
+          strategy: 'email_code',
+          emailAddressId
+        });
+
+        router.push({ pathname: '/verify/[email]', params: {email, sigin: 'true'}})
+
+      } catch(err) {
+        console.log('error', JSON.stringify(err, null,2))
+        if (isClerkAPIResponseError(err)) {
+          if (err.errors[0].code === 'from_identifier_not_found') {
+            Alert.alert('Error', err.errors[0].message)
+          }
+        }
+      }
     }
   };
   return (
@@ -40,26 +71,18 @@ const login = () => {
         </Text>
         <View style={styles.inputContainer}>
           <TextInput
-            style={[styles.input, { width: 90 }]}
-            placeholder="Country code"
-            placeholderTextColor={Colors.gray}
-            keyboardType="numeric"
-            value={countryCode}
-          />
-          <TextInput
             style={[styles.input, { flex: 1 }]}
-            placeholder="Mobile number"
-            keyboardType="numeric"
+            placeholder="Enter your email"
             placeholderTextColor={Colors.gray}
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
+            value={email}
+            onChangeText={setEmail}
           />
         </View>
 
         <TouchableOpacity
           style={[
             defaultStyles.pillButton,
-            phoneNumber !== "" ? styles.enabled : styles.disabled,
+            email !== "" ? styles.enabled : styles.disabled,
             { marginBottom: 20 },
           ]}
           onPress={() => onLogin(loginType.Phone)}>
@@ -75,9 +98,9 @@ const login = () => {
         <TouchableOpacity
           style={[defaultStyles.pillButton, styles.button]}
           onPress={() => onLogin(loginType.Email)}>
-          <Ionicons name="mail" size={24} color={"#000"} />
+          <Ionicons name='phone-landscape-outline' size={24} color={"#000"} />
           <Text style={[defaultStyles.buttonText, { color: "#000" }]}>
-            Continue with email
+            Continue with phone
           </Text>
         </TouchableOpacity>
         <TouchableOpacity

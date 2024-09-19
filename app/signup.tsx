@@ -10,13 +10,28 @@ import {
 import React, { useState } from "react";
 import { defaultStyles } from "@/constants/Styles";
 import Colors from "@/constants/Colors";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
+import { useSignUp } from "@clerk/clerk-expo";
 
 const signup = () => {
-  const [countryCode, setCountryCode] = useState("+233");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [email, setEmail] = useState("");
 
-  const onSignup = async () => {};
+  const router = useRouter();
+  const { signUp } = useSignUp();
+
+  const onSignup = async () => {
+
+    try {
+      await signUp!.create({
+        emailAddress: email,
+      });
+      signUp!.prepareEmailAddressVerification();
+
+      router.push({ pathname: '/verify/[email]', params: { email: email } });
+    } catch (error) {
+      console.error('Error signing up:', JSON.stringify(error, null, 2));
+    }
+  };
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -25,23 +40,16 @@ const signup = () => {
       <View style={defaultStyles.container}>
         <Text style={defaultStyles.header}>Let's get started</Text>
         <Text style={defaultStyles.descriptionText}>
-          Enter your phone number. We will send you a confirmation code there
+          Enter your email. We will send you a confirmation code there
         </Text>
         <View style={styles.inputContainer}>
-          <TextInput
-            style={[styles.input, { width: 90 }]}
-            placeholder="Country code"
-            placeholderTextColor={Colors.gray}
-            keyboardType="numeric"
-            value={countryCode}
-          />
+
           <TextInput
             style={[styles.input, { flex: 1 }]}
-            placeholder="Mobile number"
-            keyboardType="numeric"
+            placeholder="Enter your email"
             placeholderTextColor={Colors.gray}
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
+            value={email}
+            onChangeText={setEmail}
           />
         </View>
 
@@ -57,8 +65,8 @@ const signup = () => {
         <TouchableOpacity
           style={[
             defaultStyles.pillButton,
-            phoneNumber !== "" ? styles.enabled : styles.disabled,
-            {  marginBottom: 20 },
+            email !== "" ? styles.enabled : styles.disabled,
+            { marginBottom: 20 },
           ]}
           onPress={onSignup}>
           <Text style={defaultStyles.buttonText}>Sign up</Text>
