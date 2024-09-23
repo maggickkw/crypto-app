@@ -2,11 +2,11 @@ import Colors from "@/constants/Colors";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
-import { Link, Stack, useRouter } from "expo-router";
+import { Link, Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, Text } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as SecureStore from "expo-secure-store";
 
@@ -47,6 +47,7 @@ const InitialLayout = () => {
   });
   const router = useRouter();
   const { isLoaded, isSignedIn} = useAuth();
+  const segments = useSegments()
 
   useEffect(() => {
     if (loaded) {
@@ -56,10 +57,19 @@ const InitialLayout = () => {
 
   useEffect(() => {
     console.log('isSignedIn', isSignedIn);
+    if (!isLoaded) return;
+
+    const inAuthGroup = segments[0] === '(authenticated)';
+    if (isSignedIn && !inAuthGroup) {
+      router.replace('/(authenticated)/(tabs)/home')
+    } else if (!isSignedIn) {
+      router.replace('/')
+    }
+
     }, [isSignedIn])
 
-  if (!loaded) {
-    return null;
+  if (!loaded || !isLoaded) {
+    return <Text>Loading...</Text>
   }
 
 
@@ -126,6 +136,11 @@ const InitialLayout = () => {
             </TouchableOpacity>
           ),
         }}
+      />
+
+<Stack.Screen
+        name="(authenticated)/(tabs)"
+        options={{ headerShown:false }}
       />
     </Stack>
   );

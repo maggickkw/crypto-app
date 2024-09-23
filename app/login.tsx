@@ -98,7 +98,7 @@ const login = () => {
         <TouchableOpacity
           style={[defaultStyles.pillButton, styles.button]}
           onPress={() => onLogin(loginType.Email)}>
-          <Ionicons name='phone-landscape-outline' size={24} color={"#000"} />
+          <Ionicons name='phone-portrait-outline' size={24} color={"#000"} />
           <Text style={[defaultStyles.buttonText, { color: "#000" }]}>
             Continue with phone
           </Text>

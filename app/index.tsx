@@ -3,6 +3,7 @@ import { defaultStyles } from "@/constants/Styles";
 import { useAssets } from "expo-asset";
 import { ResizeMode, Video } from "expo-av";
 import { Link } from "expo-router";
+import { useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 const videoSource =
@@ -11,7 +12,9 @@ const videoSource =
 const Page = () => {
   const [assets] = useAssets([require("@/assets/videos/intro.mp4")]);
 
-  // console.log(JSON.stringify(assets,null,3))
+  if (!videoSource) {
+    return null
+  }
 
   return (
     <View style={styles.container}>
