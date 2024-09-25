@@ -9,13 +9,14 @@ import { useEffect } from "react";
 import { TouchableOpacity, Text } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as SecureStore from "expo-secure-store";
+import { MenuProvider } from "react-native-popup-menu";
 
-const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY
+const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 if (!CLERK_PUBLISHABLE_KEY) {
   throw new Error(
-    'Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env',
-  )
+    "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env"
+  );
 }
 
 const tokenCache = {
@@ -46,8 +47,8 @@ const InitialLayout = () => {
     ...FontAwesome.font,
   });
   const router = useRouter();
-  const { isLoaded, isSignedIn} = useAuth();
-  const segments = useSegments()
+  const { isLoaded, isSignedIn } = useAuth();
+  const segments = useSegments();
 
   useEffect(() => {
     if (loaded) {
@@ -56,24 +57,20 @@ const InitialLayout = () => {
   }, [loaded]);
 
   useEffect(() => {
-    console.log('isSignedIn', isSignedIn);
+    console.log("isSignedIn", isSignedIn);
     if (!isLoaded) return;
 
-    const inAuthGroup = segments[0] === '(authenticated)';
+    const inAuthGroup = segments[0] === "(authenticated)";
     if (isSignedIn && !inAuthGroup) {
-      router.replace('/(authenticated)/(tabs)/home')
+      router.replace("/(authenticated)/(tabs)/home");
     } else if (!isSignedIn) {
-      router.replace('/')
+      router.replace("/(authenticated)/(tabs)/home");
     }
-
-    }, [isSignedIn])
+  }, [isSignedIn]);
 
   if (!loaded || !isLoaded) {
-    return <Text>Loading...</Text>
+    return <Text>Loading...</Text>;
   }
-
-
-
 
   return (
     <Stack>
@@ -138,9 +135,9 @@ const InitialLayout = () => {
         }}
       />
 
-<Stack.Screen
+      <Stack.Screen
         name="(authenticated)/(tabs)"
-        options={{ headerShown:false }}
+        options={{ headerShown: false }}
       />
     </Stack>
   );
@@ -151,10 +148,13 @@ const RootLayoutNav = () => {
     <ClerkProvider
       publishableKey={CLERK_PUBLISHABLE_KEY!}
       tokenCache={tokenCache}>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <StatusBar style="light" />
-        <InitialLayout />
-      </GestureHandlerRootView>
+      <MenuProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <StatusBar style="light" />
+
+          <InitialLayout />
+        </GestureHandlerRootView>
+      </MenuProvider>
     </ClerkProvider>
   );
 };
