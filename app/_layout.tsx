@@ -6,10 +6,12 @@ import { Link, Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import { TouchableOpacity, Text } from "react-native";
+import { TouchableOpacity, Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as SecureStore from "expo-secure-store";
 import { MenuProvider } from "react-native-popup-menu";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
@@ -18,6 +20,8 @@ if (!CLERK_PUBLISHABLE_KEY) {
     "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env"
   );
 }
+
+const queryClient = new QueryClient();
 
 const tokenCache = {
   async getToken(key: string) {
@@ -139,6 +143,26 @@ const InitialLayout = () => {
         name="(authenticated)/(tabs)"
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="(authenticated)/crypto/[id]"
+        options={{ title: '', headerLeft: () =>   <TouchableOpacity onPress={router.back}>
+        <Ionicons name="arrow-back" size={34} color={Colors.dark} />
+      </TouchableOpacity>,
+      headerLargeTitle: true,
+    headerTransparent: true,
+  headerRight: () => (
+    <View style={{flexDirection: 'row', gap: 10}}>
+    <TouchableOpacity>
+<Ionicons name="notifications-outline" color={Colors.dark} size={30} />
+    </TouchableOpacity>
+    <TouchableOpacity>
+<Ionicons name="star-outline" color={Colors.dark} size={30} />
+    </TouchableOpacity>
+    </View>
+  )
+
+  }}
+      />
     </Stack>
   );
 };
@@ -148,6 +172,7 @@ const RootLayoutNav = () => {
     <ClerkProvider
       publishableKey={CLERK_PUBLISHABLE_KEY!}
       tokenCache={tokenCache}>
+        <QueryClientProvider client={queryClient}>
       <MenuProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <StatusBar style="light" />
@@ -155,6 +180,7 @@ const RootLayoutNav = () => {
           <InitialLayout />
         </GestureHandlerRootView>
       </MenuProvider>
+      </QueryClientProvider>
     </ClerkProvider>
   );
 };
