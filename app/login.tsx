@@ -85,7 +85,7 @@ const login = () => {
             email !== "" ? styles.enabled : styles.disabled,
             { marginBottom: 20 },
           ]}
-          onPress={() => onLogin(loginType.Phone)}>
+          onPress={() => onLogin(loginType.Email)}>
           <Text style={defaultStyles.buttonText}>Continue</Text>
         </TouchableOpacity>
 

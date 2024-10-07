@@ -33,7 +33,7 @@ const Page = () => {
     enabled: !!ids,
   });
 
-  // console.log(JSON.stringify(data, null, 3));
+  console.log(JSON.stringify(data, null, 3));
 
   return (
     <ScrollView
@@ -45,7 +45,7 @@ const Page = () => {
           <Link href={`/crypto/${currency.id}`} key={currency.id} asChild>
             <TouchableOpacity style={styles.cryptoItem}>
               <Image
-                source={{ uri: data?.[currency.id]?.logo }}
+                source={{ uri: data?.[currency?.id]?.logo }}
                 style={styles.cryptoLogo}
               />
               <View style={styles.cryptoDetails}>

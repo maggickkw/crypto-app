@@ -6,12 +6,12 @@ import { Link, Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import { TouchableOpacity, Text, View } from "react-native";
+import { TouchableOpacity, Text, View, ActivityIndicator } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as SecureStore from "expo-secure-store";
 import { MenuProvider } from "react-native-popup-menu";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
+import { UserInactivityProvider } from "@/context/UserInactivity";
 
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
@@ -55,7 +55,7 @@ const InitialLayout = () => {
   const segments = useSegments();
 
   useEffect(() => {
-    if (loaded) {
+    if (loaded && isLoaded) {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
@@ -68,13 +68,19 @@ const InitialLayout = () => {
     if (isSignedIn && !inAuthGroup) {
       router.replace("/(authenticated)/(tabs)/home");
     } else if (!isSignedIn) {
-      router.replace("/(authenticated)/(tabs)/home");
+      router.replace("/");
     }
   }, [isSignedIn]);
 
   if (!loaded || !isLoaded) {
-    return <Text>Loading...</Text>;
+    return(
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <ActivityIndicator size='large' color={Colors.primary} />
+      </View>
+    )
   }
+
+
 
   return (
     <Stack>
@@ -145,23 +151,34 @@ const InitialLayout = () => {
       />
       <Stack.Screen
         name="(authenticated)/crypto/[id]"
-        options={{ title: '', headerLeft: () =>   <TouchableOpacity onPress={router.back}>
-        <Ionicons name="arrow-back" size={34} color={Colors.dark} />
-      </TouchableOpacity>,
-      headerLargeTitle: true,
-    headerTransparent: true,
-  headerRight: () => (
-    <View style={{flexDirection: 'row', gap: 10}}>
-    <TouchableOpacity>
-<Ionicons name="notifications-outline" color={Colors.dark} size={30} />
-    </TouchableOpacity>
-    <TouchableOpacity>
-<Ionicons name="star-outline" color={Colors.dark} size={30} />
-    </TouchableOpacity>
-    </View>
-  )
-
-  }}
+        options={{
+          title: "",
+          headerLeft: () => (
+            <TouchableOpacity onPress={router.back}>
+              <Ionicons name="arrow-back" size={34} color={Colors.dark} />
+            </TouchableOpacity>
+          ),
+          headerLargeTitle: true,
+          headerTransparent: true,
+          headerRight: () => (
+            <View style={{ flexDirection: "row", gap: 10 }}>
+              <TouchableOpacity>
+                <Ionicons
+                  name="notifications-outline"
+                  color={Colors.dark}
+                  size={30}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Ionicons name="star-outline" color={Colors.dark} size={30} />
+              </TouchableOpacity>
+            </View>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="(authenticated)/(modals)/lock"
+        options={{ headerShown: false, animation: "none" }}
       />
     </Stack>
   );
@@ -172,14 +189,16 @@ const RootLayoutNav = () => {
     <ClerkProvider
       publishableKey={CLERK_PUBLISHABLE_KEY!}
       tokenCache={tokenCache}>
-        <QueryClientProvider client={queryClient}>
-      <MenuProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <StatusBar style="light" />
+      <QueryClientProvider client={queryClient}>
+        <MenuProvider>
+          <UserInactivityProvider>
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <StatusBar style="light" />
 
-          <InitialLayout />
-        </GestureHandlerRootView>
-      </MenuProvider>
+              <InitialLayout />
+            </GestureHandlerRootView>
+          </UserInactivityProvider>
+        </MenuProvider>
       </QueryClientProvider>
     </ClerkProvider>
   );

@@ -34,7 +34,7 @@ const Chart = () => {
 
   useEffect(() => {
     console.log(isActive);
-    console.log(state.y.price.value);
+    console.log(state);
     if (isActive) Haptics.selectionAsync();
   }, [isActive, state]);
 
@@ -60,13 +60,16 @@ const Chart = () => {
     }
   })
   const animatedDateText = useAnimatedProps(() => {
-    const date = new Date(state.x.value.value)
+
     // console.log(date)
     return {
-        text: `${date.toLocaleDateString()} $`,
+        text: `${state.x.value.value}`,
         defaultValue: ''
     }
   })
+
+// console.log('STATE 🍍🍍🍍', state)
+
 
   return (
     <View
