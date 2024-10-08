@@ -2,8 +2,7 @@ import Colors from "@/constants/Colors";
 import { defaultStyles } from "@/constants/Styles";
 import { useAssets } from "expo-asset";
 import { ResizeMode, Video } from "expo-av";
-import { Link } from "expo-router";
-import { useEffect } from "react";
+import { Link } from "expo-router";;
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 const videoSource =

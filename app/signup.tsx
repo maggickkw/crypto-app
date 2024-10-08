@@ -27,7 +27,7 @@ const signup = () => {
       });
       signUp!.prepareEmailAddressVerification();
 
-      router.push({ pathname: '/verify/[email]', params: { email: email } });
+      router.push({ pathname: '/verify/[email]', params: { email: email, signup: 'true' } });
     } catch (error) {
       console.error('Error signing up:', JSON.stringify(error, null, 2));
     }

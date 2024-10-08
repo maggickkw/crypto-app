@@ -5,9 +5,12 @@ import { FontAwesome } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
 import { BlurView } from "expo-blur";
 import CustomHeader from "@/components/CustomHeader";
+import { StatusBar } from "expo-status-bar";
 
 const _layout = () => {
   return (
+    <>
+    <StatusBar style="dark" />
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors.primary,
@@ -80,6 +83,7 @@ const _layout = () => {
         }}
       />
     </Tabs>
+    </>
   );
 };
 

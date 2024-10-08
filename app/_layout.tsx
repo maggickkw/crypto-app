@@ -73,14 +73,12 @@ const InitialLayout = () => {
   }, [isSignedIn]);
 
   if (!loaded || !isLoaded) {
-    return(
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <ActivityIndicator size='large' color={Colors.primary} />
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color={Colors.primary} />
       </View>
-    )
+    );
   }
-
-
 
   return (
     <Stack>
@@ -180,6 +178,18 @@ const InitialLayout = () => {
         name="(authenticated)/(modals)/lock"
         options={{ headerShown: false, animation: "none" }}
       />
+      <Stack.Screen
+        name="(authenticated)/(modals)/account"
+        options={{
+          presentation: "transparentModal",
+          animation: "fade",
+          title: "",
+          headerTransparent: true,
+          headerLeft: () => ( <TouchableOpacity onPress={router.back}>
+            <Ionicons name="close-outline" size={34} color={'#fff'} />
+          </TouchableOpacity>)
+        }}
+      />
     </Stack>
   );
 };
@@ -193,7 +203,7 @@ const RootLayoutNav = () => {
         <MenuProvider>
           <UserInactivityProvider>
             <GestureHandlerRootView style={{ flex: 1 }}>
-              <StatusBar style="light" />
+              <StatusBar style="dark" />
 
               <InitialLayout />
             </GestureHandlerRootView>

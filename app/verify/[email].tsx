@@ -29,6 +29,10 @@ import {
       email: string;
       signin: string;
     }>();
+    console.log(email)
+    console.log(signin)
+
+
 
     const [code, setCode] = useState("");
     const { signIn } = useSignIn();
@@ -42,9 +46,8 @@ import {
 
     useEffect(() => {
       if (code.length === 6) {
-        console.log(code);
 
-        if (signin === "true") {
+        if (signin === 'true') {
           verifySignIn();
         } else {
           verifyCode();
@@ -53,6 +56,8 @@ import {
     }, [code]);
 
     const verifyCode = async () => {
+
+
       try {
         await signUp!.attemptEmailAddressVerification({
           code,
@@ -67,9 +72,14 @@ import {
     };
 
     const verifySignIn = async () => {
+
+      if (!signIn) {
+        Alert.alert("Error", "Sign-in process is not initialized.");
+        return;
+      }
       try {
         await signIn!.attemptFirstFactor({
-          strategy: "email_code",
+          strategy: 'email_code',
           code,
         });
         await setActive!({ session: signIn!.createdSessionId });

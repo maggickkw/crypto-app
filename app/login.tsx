@@ -46,8 +46,7 @@ const login = () => {
           strategy: 'email_code',
           emailAddressId
         });
-
-        router.push({ pathname: '/verify/[email]', params: {email, sigin: 'true'}})
+        router.push({ pathname: '/verify/[email]', params: {email: email, sigin: 'true'}})
 
       } catch(err) {
         console.log('error', JSON.stringify(err, null,2))
