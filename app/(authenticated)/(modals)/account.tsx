@@ -141,7 +141,7 @@ const account = () => {
       <View style={styles.actions}>
         <TouchableOpacity style={styles.button} onPress={() => signOut()}>
           <Ionicons name="log-out" size={23} color={"#fff"} />
-          <Text style={{ color: "#fff", fontSize: 18 }}>Account</Text>
+          <Text style={{ color: "#fff", fontSize: 18 }}>Logout</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button}>
           <Ionicons name="person" size={23} color={"#fff"} />
