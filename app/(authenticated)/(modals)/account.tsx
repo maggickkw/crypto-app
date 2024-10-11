@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { BlurView } from "expo-blur";
 import Colors from "@/constants/Colors";

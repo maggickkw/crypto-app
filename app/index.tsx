@@ -2,32 +2,29 @@ import Colors from "@/constants/Colors";
 import { defaultStyles } from "@/constants/Styles";
 import { useAssets } from "expo-asset";
 import { ResizeMode, Video } from "expo-av";
-import { Link } from "expo-router";;
+import { Link } from "expo-router";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-const videoSource =
-  "https://videos.pexels.com/video-files/7579667/7579667-sd_506_960_25fps.mp4";
 
 const Page = () => {
   const [assets] = useAssets([require("@/assets/videos/intro.mp4")]);
-
-  if (!videoSource) {
-    return null
+  console.log(JSON.stringify(assets?.[0].uri));
+  if (!assets?.[0].uri) {
+    return null;
   }
 
   return (
     <View style={styles.container}>
-      {videoSource && (
-        <Video
-          resizeMode={ResizeMode.COVER}
-          isMuted
-          isLooping
-          shouldPlay
-          useNativeControls={false}
-          source={{ uri: videoSource }}
-          style={styles.video}
-        />
-      )}
+      <Video
+        resizeMode={ResizeMode.COVER}
+        isMuted
+        isLooping
+        shouldPlay
+        useNativeControls={false}
+        source={{ uri: assets?.[0]?.uri }}
+        style={styles.video}
+      />
+
       <View style={styles.textContainer}>
         <Text style={styles.text}>Change the way you make money!</Text>
       </View>
@@ -48,7 +45,7 @@ const Page = () => {
           href={"/signup"}
           style={[
             defaultStyles.pillButton,
-            { flex: 1, backgroundColor: '#fff'},
+            { flex: 1, backgroundColor: "#fff" },
           ]}
           asChild>
           <TouchableOpacity>
@@ -96,7 +93,6 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 23,
     fontWeight: "500",
-  }
-
+  },
 });
 export default Page;
