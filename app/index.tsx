@@ -7,15 +7,14 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 
 const Page = () => {
-  const [assets] = useAssets([require("@/assets/videos/intro.mp4")]);
-  console.log(JSON.stringify(assets?.[0].uri));
-  if (!assets?.[0].uri) {
-    return null;
-  }
+  // const [assets] = useAssets([require("@/assets/videos/intro.mp4")]);
+  // if (!assets?.[0]?.uri) {
+  //   return null;
+  // }
 
   return (
     <View style={styles.container}>
-      <Video
+      {/* <Video
         resizeMode={ResizeMode.COVER}
         isMuted
         isLooping
@@ -23,7 +22,7 @@ const Page = () => {
         useNativeControls={false}
         source={{ uri: assets?.[0]?.uri }}
         style={styles.video}
-      />
+      /> */}
 
       <View style={styles.textContainer}>
         <Text style={styles.text}>Change the way you make money!</Text>
